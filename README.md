@@ -1,4 +1,4 @@
-# Proyecto Final Pre-Entrega - CoderHouse - Backend
+# Proyecto Final - CoderHouse - Backend
 
 Alumno: Daniel Diaz
 
