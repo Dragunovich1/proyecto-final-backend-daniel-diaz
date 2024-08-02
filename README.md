@@ -86,7 +86,6 @@ El servidor estará corriendo en \`http://localhost:8080\`.
 
 ## Estructura del Proyecto
 
-\`\`\`plaintext
 2-pre-entrega-daniel-diaz-backend/
 ├── app.js
 ├── controllers/
@@ -111,7 +110,7 @@ El servidor estará corriendo en \`http://localhost:8080\`.
 ├── package.json
 ├── package-lock.json
 └── README.md
-\`\`\`
+
 
 ## Instrucciones de Uso
 
