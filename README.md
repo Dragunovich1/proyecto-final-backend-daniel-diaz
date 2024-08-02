@@ -63,53 +63,22 @@ El servidor estará corriendo en \`http://localhost:8080\`.
 ### Dashboard
 
 - **URL**: \`http://localhost:8080\`
-- **Método**: \`GET\`
 - **Descripción**: Muestra la lista de productos disponibles, permite acceder al resto de las vistas, se pueden realizar todas las pruebas desde aqui.
 
 ### Productos en Tiempo Real
 
 - **URL**: \`http://localhost:8080/realtimeproducts\`
-- **Método**: \`GET\`
 - **Descripción**: Muestra una lista de productos que se actualiza en tiempo real. Permite agregar y eliminar productos.
 
 ### Carrito de Compras
 
 - **URL**: \`http://localhost:8080/carts/:cid\`
-- **Método**: \`GET\`
 - **Descripción**: Muestra los productos en el carrito específico. Permite incrementar, decrementar y eliminar productos del carrito.
 
 ### Detalle de Producto
 
 - **URL**: \`http://localhost:8080/products/:pid\`
-- **Método**: \`GET\`
 - **Descripción**: Muestra los detalles de un producto específico y permite agregarlo al carrito.
-
-## Estructura del Proyecto
-
-2-pre-entrega-daniel-diaz-backend/
-├── app.js
-├── controllers/
-│   ├── productController.js
-│   └── cartController.js
-├── data/
-│   ├── products.json
-│   └── carts.json
-├── routes/
-│   ├── productRoutes.js
-│   └── cartRoutes.js
-├── views/
-│   ├── layouts/
-│   │   └── main.handlebars
-│   ├── index.handlebars
-│   ├── realTimeProducts.handlebars
-│   ├── product.handlebars
-│   └── carts.handlebars
-├── public/
-│   └── css/
-│       └── style.css
-├── package.json
-├── package-lock.json
-└── README.md
 
 
 ## Instrucciones de Uso
