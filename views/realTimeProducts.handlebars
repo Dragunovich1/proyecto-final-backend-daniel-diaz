@@ -1,0 +1,69 @@
+{{!-- realTimeProducts.handlebars --}}
+{{#> layout showDashboardLink=true cartId=cartId}}
+    <h2>{{title}}</h2>
+    <ul class="product-list" id="products-list">
+        {{#each products}}
+            <li class="product-item">
+                <span>{{this.name}} - ${{this.price}}</span>
+                <button onclick="deleteProduct('{{this._id}}')">Eliminar</button>
+            </li>
+        {{/each}}
+    </ul>
+
+    <h2>Agregar productos</h2>
+    <form id="product-form">
+        <input type="text" id="name" placeholder="Nombre" required>
+        <input type="text" id="description" placeholder="Descripción" required>
+        <input type="text" id="category" placeholder="Categoría" required>
+        <input type="number" id="price" placeholder="Precio" required>
+        <input type="number" id="stock" placeholder="Stock" required>
+        <button type="submit">Agregar producto</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        document.getElementById('product-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const product = {
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                category: document.getElementById('category').value,
+                price: parseFloat(document.getElementById('price').value),
+                stock: parseInt(document.getElementById('stock').value),
+            };
+
+            fetch('/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(product),
+            }).then(response => response.json())
+              .then(data => {
+                  console.log(data);
+                  document.getElementById('product-form').reset();  // Resetear el formulario
+              });
+        });
+
+        function deleteProduct(productId) {
+            fetch(`/api/products/${productId}`, {
+                method: 'DELETE'
+            }).then(response => response.json())
+              .then(data => console.log(data));
+        }
+
+        socket.on('update-products', (products) => {
+            const productsList = document.getElementById('products-list');
+            productsList.innerHTML = '';
+            products.forEach(product => {
+                const listItem = document.createElement('li');
+                listItem.className = 'product-item';
+                listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
+                    <button onclick="deleteProduct('${product._id}')">Eliminar</button>`;
+                productsList.appendChild(listItem);
+            });
+        });
+    </script>
+{{/layout}}
