@@ -1,3 +1,5 @@
+// app.js
+
 const express = require('express');
 const path = require('path');
 const { engine } = require('express-handlebars');
@@ -67,7 +69,7 @@ app.get('/', getProductsForView);
 app.get('/realtimeproducts', async (req, res) => {
     try {
         const products = await Product.find();
-        res.render('realTimeProducts', { title: 'Ver/agregar/eliminar productos', products, showDashboardLink: true });
+        res.render('realTimeProducts', { title: 'Agregar/modificar/eliminar productos', products, showDashboardLink: true });
     } catch (error) {
         res.status(500).send('Error al obtener los productos');
     }
@@ -106,6 +108,20 @@ app.get('/carts/:cid/product/:pid/confirmation', async (req, res) => {
         res.render('confirmation', { title: 'Confirmacion de producto agregado',cart, product, showDashboardLink: true });
     } catch (error) {
         res.status(500).send('Error al obtener el producto');
+    }
+});
+
+// Nueva ruta para vista de edición
+app.get('/products/:pid/edit', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.pid);
+        if (product) {
+            res.render('editProduct', { title: 'Modificar Producto', product, showDashboardLink: true });
+        } else {
+            res.status(404).json({ message: 'Producto no encontrado' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 });
 

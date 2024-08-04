@@ -5,7 +5,10 @@
         {{#each products}}
             <li class="product-item">
                 <span>{{this.name}} - ${{this.price}}</span>
-                <button onclick="deleteProduct('{{this._id}}')">Eliminar</button>
+                <div class="product-actions">
+                    <button class="action-button" onclick="deleteProduct('{{this._id}}')">Eliminar</button>
+                    <button class="action-button" onclick="window.location.href='/products/{{this._id}}/edit'">Modificar</button>
+                </div>
             </li>
         {{/each}}
     </ul>
@@ -19,6 +22,35 @@
         <input type="number" id="stock" placeholder="Stock" required>
         <button type="submit">Agregar producto</button>
     </form>
+
+    <style>
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .action-button {
+            display: flex;
+            padding: 0.5rem 1rem;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 3px;
+            border: none;
+            text-align: center;
+        }
+        .action-button:hover {
+            background-color: #555;
+        }
+    </style>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -61,7 +93,10 @@
                 const listItem = document.createElement('li');
                 listItem.className = 'product-item';
                 listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
-                    <button onclick="deleteProduct('${product._id}')">Eliminar</button>`;
+                    <div class="product-actions">
+                        <button class="action-button" onclick="deleteProduct('${product._id}')">Eliminar</button>
+                        <a href="/products/${product._id}/edit" class="action-button">Modificar</a>
+                    </div>`;
                 productsList.appendChild(listItem);
             });
         });

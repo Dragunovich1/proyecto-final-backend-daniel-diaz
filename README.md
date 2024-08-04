@@ -65,10 +65,10 @@ El servidor estará corriendo en \`http://localhost:8080\`.
 - **URL**: \`http://localhost:8080\`
 - **Descripción**: Muestra la lista de productos disponibles, permite acceder al resto de las vistas, se pueden realizar todas las pruebas desde aqui.
 
-### Productos en Tiempo Real
+### Agregar/modificar/eliminar productos
 
 - **URL**: \`http://localhost:8080/realtimeproducts\`
-- **Descripción**: Muestra una lista de productos que se actualiza en tiempo real. Permite agregar y eliminar productos.
+- **Descripción**: Muestra una lista de productos que se actualiza en tiempo real. Permite agregar, modificar y eliminar productos.
 
 ### Carrito de Compras
 

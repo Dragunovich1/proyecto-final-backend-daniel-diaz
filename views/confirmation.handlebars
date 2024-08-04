@@ -25,6 +25,22 @@
             border: 1px solid #ddd;
             border-radius: 3px;
         }
+        .action-button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 3px;
+            border: none;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        .action-button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
@@ -35,7 +51,7 @@
         <div class="product-details">
             <pre>{{json product}}</pre>
         </div>
-        <a href="/carts/{{cart._id}}">Ver Carrito</a>
+        <a href="/carts/{{cart._id}}" class="action-button">Ver Carrito</a>
     </div>
 </body>
 </html>
