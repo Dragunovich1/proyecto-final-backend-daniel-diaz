@@ -6,8 +6,8 @@
             <li class="product-item">
                 <span>{{this.name}} - ${{this.price}}</span>
                 <div class="product-actions">
-                    <button class="action-button" onclick="deleteProduct('{{this._id}}')">Eliminar</button>
-                    <button class="action-button" onclick="window.location.href='/products/{{this._id}}/edit'">Modificar</button>
+                    <a href="#" class="action-link" onclick="deleteProduct('{{this._id}}')">Eliminar</a>
+                    <a href="/products/{{this._id}}/edit" class="action-link">Modificar</a>
                 </div>
             </li>
         {{/each}}
@@ -20,7 +20,7 @@
         <input type="text" id="category" placeholder="Categoría" required>
         <input type="number" id="price" placeholder="Precio" required>
         <input type="number" id="stock" placeholder="Stock" required>
-        <button type="submit">Agregar producto</button>
+        <button type="submit" class="action-button">Agregar producto</button>
     </form>
 
     <style>
@@ -37,6 +37,18 @@
             display: flex;
             gap: 0.5rem;
         }
+        .action-link {
+            padding: 0.5rem 1rem;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 3px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .action-link:hover {
+            background-color: #555;
+        }
         .action-button {
             display: flex;
             padding: 0.5rem 1rem;
@@ -46,9 +58,13 @@
             border-radius: 3px;
             border: none;
             text-align: center;
+            cursor: pointer;
         }
         .action-button:hover {
             background-color: #555;
+        }
+        .action-button:focus {
+            outline: none;
         }
     </style>
 
@@ -76,6 +92,9 @@
               .then(data => {
                   console.log(data);
                   document.getElementById('product-form').reset();  // Resetear el formulario
+
+                  // Emitir un evento de actualización de productos
+                  socket.emit('new-product', data);
               });
         });
 
@@ -83,7 +102,11 @@
             fetch(`/api/products/${productId}`, {
                 method: 'DELETE'
             }).then(response => response.json())
-              .then(data => console.log(data));
+              .then(data => {
+                  console.log(data);
+                  // Emitir un evento de eliminación de productos
+                  socket.emit('delete-product', productId);
+              });
         }
 
         socket.on('update-products', (products) => {
@@ -94,11 +117,34 @@
                 listItem.className = 'product-item';
                 listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
                     <div class="product-actions">
-                        <button class="action-button" onclick="deleteProduct('${product._id}')">Eliminar</button>
-                        <a href="/products/${product._id}/edit" class="action-button">Modificar</a>
+                        <a href="#" class="action-link" onclick="deleteProduct('${product._id}')">Eliminar</a>
+                        <a href="/products/${product._id}/edit" class="action-link">Modificar</a>
                     </div>`;
                 productsList.appendChild(listItem);
             });
+        });
+
+        socket.on('new-product', (product) => {
+            const productsList = document.getElementById('products-list');
+            const listItem = document.createElement('li');
+            listItem.className = 'product-item';
+            listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
+                <div class="product-actions">
+                    <a href="#" class="action-link" onclick="deleteProduct('${product._id}')">Eliminar</a>
+                    <a href="/products/${product._id}/edit" class="action-link">Modificar</a>
+                </div>`;
+            productsList.appendChild(listItem);
+        });
+
+        socket.on('delete-product', (productId) => {
+            const productsList = document.getElementById('products-list');
+            const productItems = productsList.getElementsByClassName('product-item');
+            for (let i = 0; i < productItems.length; i++) {
+                if (productItems[i].querySelector('a').onclick.toString().includes(productId)) {
+                    productsList.removeChild(productItems[i]);
+                    break;
+                }
+            }
         });
     </script>
 {{/layout}}
