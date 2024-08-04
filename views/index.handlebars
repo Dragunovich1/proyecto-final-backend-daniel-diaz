@@ -2,9 +2,9 @@
 <ul class="product-list">
     {{#each products}}
         <li class="product-item">
-            <span><a href="/products/{{this._id}}" style="text-decoration: none; color: #333;">{{this.name}}</a> - ${{this.price}}</span>
+            <span><a href="/products/{{this._id}}" class="product-link">{{this.name}}</a> - ${{this.price}}</span>
             <form action="/api/carts/{{../cartId}}/product/{{this._id}}" method="POST" style="margin: 0;">
-                <button type="submit">Agregar al carrito</button>
+                <a href="#" onclick="this.closest('form').submit()" class="action-link">Agregar al carrito</a>
             </form>
         </li>
     {{/each}}
@@ -12,10 +12,41 @@
 
 <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
     {{#if hasPrevPage}}
-        <a href="{{prevLink}}" style="text-decoration: none; color: #333;">Página Anterior</a>
+        <a href="{{prevLink}}" class="action-link">Página Anterior</a>
     {{/if}}
 
     {{#if hasNextPage}}
-        <a href="{{nextLink}}" style="text-decoration: none; color: #333;">Página Siguiente</a>
+        <a href="{{nextLink}}" class="action-link">Página Siguiente</a>
     {{/if}}
 </div>
+
+<style>
+    .product-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+    }
+    .product-link {
+        text-decoration: none;
+        color: #333;
+    }
+    .product-link:hover {
+        text-decoration: underline;
+    }
+    .action-link {
+        padding: 0.5rem 1rem;
+        background-color: #333;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 3px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .action-link:hover {
+        background-color: #555;
+    }
+</style>

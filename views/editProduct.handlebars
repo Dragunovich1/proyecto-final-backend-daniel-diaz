@@ -120,7 +120,7 @@
                 stock: parseInt(document.getElementById('stock').value),
             };
 
-            fetch(`/api/products/${productId}`, {
+            fetch(/api/products/${productId}, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

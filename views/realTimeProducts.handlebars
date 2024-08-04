@@ -6,7 +6,7 @@
             <li class="product-item">
                 <span>{{this.name}} - ${{this.price}}</span>
                 <div class="product-actions">
-                    <a href="#" class="action-link" onclick="deleteProduct('{{this._id}}')">Eliminar</a>
+                    <a href="#" class="action-link" onclick="deleteProduct('{{this._id}}'); return false;">Eliminar</a>
                     <a href="/products/{{this._id}}/edit" class="action-link">Modificar</a>
                 </div>
             </li>
@@ -14,13 +14,13 @@
     </ul>
 
     <h2>Agregar productos</h2>
-    <form id="product-form">
+    <form id="product-form" onsubmit="addProduct(event)">
         <input type="text" id="name" placeholder="Nombre" required>
         <input type="text" id="description" placeholder="Descripción" required>
         <input type="text" id="category" placeholder="Categoría" required>
-        <input type="number" id="price" placeholder="Precio" required>
-        <input type="number" id="stock" placeholder="Stock" required>
-        <button type="submit" class="action-button">Agregar producto</button>
+        <input type="number" id="price" placeholder="Precio" required min="0.01" step="0.01">
+        <input type="number" id="stock" placeholder="Stock" required min="1">
+        <button type="submit" class="styled-button">Agregar producto</button>
     </form>
 
     <style>
@@ -49,8 +49,7 @@
         .action-link:hover {
             background-color: #555;
         }
-        .action-button {
-            display: flex;
+        .styled-button {
             padding: 0.5rem 1rem;
             background-color: #333;
             color: #fff;
@@ -59,12 +58,10 @@
             border: none;
             text-align: center;
             cursor: pointer;
+            font-family: Arial, sans-serif;
         }
-        .action-button:hover {
+        .styled-button:hover {
             background-color: #555;
-        }
-        .action-button:focus {
-            outline: none;
         }
     </style>
 
@@ -72,14 +69,27 @@
     <script>
         const socket = io();
 
-        document.getElementById('product-form').addEventListener('submit', function(event) {
+        function addProduct(event) {
             event.preventDefault();
+            const price = parseFloat(document.getElementById('price').value);
+            const stock = parseInt(document.getElementById('stock').value);
+
+            if (price <= 0) {
+                alert('El precio debe ser un número positivo mayor que cero.');
+                return;
+            }
+
+            if (stock <= 0) {
+                alert('El stock debe ser un número positivo mayor que cero.');
+                return;
+            }
+
             const product = {
                 name: document.getElementById('name').value,
                 description: document.getElementById('description').value,
                 category: document.getElementById('category').value,
-                price: parseFloat(document.getElementById('price').value),
-                stock: parseInt(document.getElementById('stock').value),
+                price: price,
+                stock: stock,
             };
 
             fetch('/api/products', {
@@ -92,11 +102,9 @@
               .then(data => {
                   console.log(data);
                   document.getElementById('product-form').reset();  // Resetear el formulario
-
-                  // Emitir un evento de actualización de productos
                   socket.emit('new-product', data);
               });
-        });
+        }
 
         function deleteProduct(productId) {
             fetch(`/api/products/${productId}`, {
@@ -104,7 +112,6 @@
             }).then(response => response.json())
               .then(data => {
                   console.log(data);
-                  // Emitir un evento de eliminación de productos
                   socket.emit('delete-product', productId);
               });
         }
@@ -117,7 +124,7 @@
                 listItem.className = 'product-item';
                 listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
                     <div class="product-actions">
-                        <a href="#" class="action-link" onclick="deleteProduct('${product._id}')">Eliminar</a>
+                        <a href="#" class="action-link" onclick="deleteProduct('${product._id}'); return false;">Eliminar</a>
                         <a href="/products/${product._id}/edit" class="action-link">Modificar</a>
                     </div>`;
                 productsList.appendChild(listItem);
@@ -130,7 +137,7 @@
             listItem.className = 'product-item';
             listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
                 <div class="product-actions">
-                    <a href="#" class="action-link" onclick="deleteProduct('${product._id}')">Eliminar</a>
+                    <a href="#" class="action-link" onclick="deleteProduct('${product._id}'); return false;">Eliminar</a>
                     <a href="/products/${product._id}/edit" class="action-link">Modificar</a>
                 </div>`;
             productsList.appendChild(listItem);
