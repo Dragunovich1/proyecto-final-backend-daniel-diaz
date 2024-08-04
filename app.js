@@ -67,7 +67,7 @@ app.get('/', getProductsForView);
 app.get('/realtimeproducts', async (req, res) => {
     try {
         const products = await Product.find();
-        res.render('realTimeProducts', { title: 'Ver/agregar productos', products, showDashboardLink: true });
+        res.render('realTimeProducts', { title: 'Ver/agregar/eliminar productos', products, showDashboardLink: true });
     } catch (error) {
         res.status(500).send('Error al obtener los productos');
     }
