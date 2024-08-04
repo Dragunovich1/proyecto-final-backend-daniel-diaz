@@ -13,17 +13,28 @@ const getCartById = async (req, res) => {
 };
 
 const addProductToCart = async (req, res) => {
-    const cart = await Cart.findById(req.params.cid);
-    const { pid } = req.params;
-    const existingProduct = cart.products.find(p => p.product.toString() === pid);
-    if (existingProduct) {
-        existingProduct.quantity += 1;
-    } else {
-        cart.products.push({ product: pid, quantity: 1 });
+    try {
+        const { cid, pid } = req.params;
+        const cart = await Cart.findById(cid);
+        const product = await Product.findById(pid);
+
+        const existingProductIndex = cart.products.findIndex(p => p.product.toString() === pid);
+
+        if (existingProductIndex !== -1) {
+            cart.products[existingProductIndex].quantity += 1;
+        } else {
+            cart.products.push({ product: pid, quantity: 1 });
+        }
+
+        await cart.save();
+
+        // Redirigir a la vista de confirmación
+        res.redirect(`/carts/${cid}/product/${pid}/confirmation`);
+    } catch (error) {
+        res.status(500).send('Error al agregar el producto al carrito');
     }
-    await cart.save();
-    res.json(cart);
 };
+
 
 const deleteProductFromCart = async (req, res) => {
     const cart = await Cart.findById(req.params.cid);

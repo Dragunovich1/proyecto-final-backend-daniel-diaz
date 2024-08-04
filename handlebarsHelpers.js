@@ -12,4 +12,8 @@ handlebars.registerHelper('eq', function(a, b) {
     return a === b;
 });
 
+handlebars.registerHelper('json', function(context) {
+    return JSON.stringify(context, null, 2);
+});
+
 module.exports = handlebars;

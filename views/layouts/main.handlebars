@@ -24,7 +24,7 @@
             padding: 20px;
             max-width: 800px;
             flex: 1;
-            margin-top: 70px; /* Añadir espacio para la navbar fija */
+            margin-top: 70px;
         }
         .header {
             background-color: #f8f8f8;
@@ -42,7 +42,7 @@
             background-color: #f8f8f8;
             padding: 1rem;
             border-bottom: 1px solid #ddd;
-            z-index: 1000; /* Asegurar que la navbar esté siempre en la parte superior */
+            z-index: 1000;
         }
         .nav .title {
             font-size: 1.5rem;
@@ -79,7 +79,7 @@
             background-color: #555;
         }
         .product-list {
-            list-style-type: none; /* Eliminar los puntos de la lista */
+            list-style-type: none;
             padding: 0;
         }
         .product-item {
@@ -100,7 +100,7 @@
             {{#if showDashboardLink}}
                 <a href="/">Volver al Dashboard</a>
             {{else}}
-                <a href="/realtimeproducts">Ver Productos en Tiempo Real</a>
+                <a href="/realtimeproducts">Ver/agregar Productos</a>
                 <a href="/carts/{{cartId}}">Ver Carrito Actual</a>
             {{/if}}
         </div>

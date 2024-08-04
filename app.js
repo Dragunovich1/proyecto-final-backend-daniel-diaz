@@ -19,7 +19,7 @@ const io = socketIo(server);
 
 // Conectar a MongoDB
 mongoose.connect('mongodb://localhost:27017/base_de_datos', {
-    serverSelectionTimeoutMS: 30000, // Aumentar el tiempo de espera a 30 segundos
+    serverSelectionTimeoutMS: 30000,
 })
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log('MongoDB connection error:', err));
@@ -39,7 +39,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Configurar middleware de sesión
 app.use(session({
-    secret: 'tu_secreto_de_sesion', // Cambia esto a un valor seguro
+    secret: '7ae24cf711c0927e7b786016f6bddb1c39fd626d',
     resave: false,
     saveUninitialized: true
 }));
@@ -62,20 +62,12 @@ app.use('/api/carts', cartRoutes);
 
 // Ruta para vista index.handlebars
 app.get('/', getProductsForView);
-app.get('/', async (req, res) => {
-    try {
-        const products = await Product.find();
-        res.render('index', { title: 'Dashboard', products, cartId: req.session.cartId });
-    } catch (error) {
-        res.status(500).send('Error al obtener los productos');
-    }
-});
 
 // Ruta para vista realTimeProducts.handlebars
 app.get('/realtimeproducts', async (req, res) => {
     try {
         const products = await Product.find();
-        res.render('realTimeProducts', { title: 'Productos en Tiempo Real', products, showDashboardLink: true });
+        res.render('realTimeProducts', { title: 'Ver/agregar productos', products, showDashboardLink: true });
     } catch (error) {
         res.status(500).send('Error al obtener los productos');
     }
@@ -102,6 +94,18 @@ app.get('/products/:pid', async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+});
+
+// Ruta para vista confirmation.handlebars
+app.get('/carts/:cid/product/:pid/confirmation', async (req, res) => {
+    try {
+        const cart = await Cart.findById(req.params.cid).populate('products.product');
+        const product = await Product.findById(req.params.pid);
+
+        res.render('confirmation', { title: 'Confirmacion de producto agregado',cart, product, showDashboardLink: true });
+    } catch (error) {
+        res.status(500).send('Error al obtener el producto');
     }
 });
 
