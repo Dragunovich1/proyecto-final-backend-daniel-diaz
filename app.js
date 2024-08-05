@@ -128,6 +128,9 @@ app.get('/products/:pid/edit', async (req, res) => {
 // Manejo de conexiones WebSocket
 io.on('connection', (socket) => {
     console.log('Nuevo cliente conectado');
+    socket.on('disconnect', () => {
+        console.log('Cliente desconectado');
+    });
 });
 
 const PORT = process.env.PORT || 8080;

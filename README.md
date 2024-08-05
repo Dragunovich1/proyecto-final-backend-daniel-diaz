@@ -96,21 +96,96 @@ El servidor estará corriendo en \`http://localhost:8080\`.
 
 Para realizar pruebas, puedes utilizar herramientas como Postman o Insomnia para enviar solicitudes HTTP a las rutas de la API. Asegúrate de tener la base de datos MongoDB corriendo y correctamente configurada.
 
-### Ejemplos de Pruebas Manuales
+## Pruebas Manuales con Postman
 
-1. **Agregar Producto**:
-   - Endpoint: \`POST /api/products\`
-   - Body: \`{ "name": "Producto", "description": "Descripción", "category": "Categoría", "price": 1000, "stock": 10 }\`
+### Productos
 
-2. **Eliminar Producto**:
-   - Endpoint: \`DELETE /api/products/:pid\`
+1. **Obtener productos con filtros, paginación y ordenamientos**
+   - **URL**: `GET /api/products`
+   - **Params**:
+     - `limit`: 10
+     - `page`: 1
+     - `sort`: `asc` o `desc`
+     - `query`: (categoría deseada)
+   - **Response**: Debe devolver la estructura con paginación y productos.
 
-3. **Agregar Producto al Carrito**:
-   - Endpoint: \`POST /api/carts/:cid/product/:pid\`
+2. **Agregar un nuevo producto**
+   - **URL**: `POST /api/products`
+   - **Body (JSON)**:
+     ```json
+     {
+       "title": "Nuevo Producto",
+       "description": "Descripción del producto",
+       "code": "NP001",
+       "price": 100,
+       "stock": 50,
+       "category": "Categoría",
+       "status": true
+     }
+     ```
+   - **Response**: Debe devolver el producto creado.
 
-4. **Eliminar Producto del Carrito**:
-   - Endpoint: \`DELETE /api/carts/:cid/product/:pid\`
+3. **Obtener producto por ID**
+   - **URL**: `GET /api/products/:pid`
+   - **Response**: Debe devolver el producto con el ID especificado.
 
-5. **Actualizar Cantidad de Producto en el Carrito**:
-   - Endpoint: \`PUT /api/carts/:cid/product/:pid\`
-   - Body: \`{ "quantity": 2 }\`
+4. **Actualizar un producto**
+   - **URL**: `PUT /api/products/:pid`
+   - **Body (JSON)**:
+     ```json
+     {
+       "title": "Producto Actualizado",
+       "description": "Descripción actualizada",
+       "price": 120
+     }
+     ```
+   - **Response**: Debe devolver el producto actualizado.
+
+5. **Eliminar un producto**
+   - **URL**: `DELETE /api/products/:pid`
+   - **Response**: Debe devolver un mensaje de confirmación de eliminación.
+
+### Carritos
+
+1. **Crear un nuevo carrito**
+   - **URL**: `POST /api/carts`
+   - **Response**: Debe devolver el carrito creado.
+
+2. **Obtener carrito por ID**
+   - **URL**: `GET /api/carts/:cid`
+   - **Response**: Debe devolver el carrito con el ID especificado.
+
+3. **Agregar producto al carrito**
+   - **URL**: `POST /api/carts/:cid/product/:pid`
+   - **Response**: Debe devolver el carrito con el producto añadido.
+
+4. **Eliminar un producto del carrito**
+   - **URL**: `DELETE /api/carts/:cid/products/:pid`
+   - **Response**: Debe devolver el carrito con el producto eliminado.
+
+5. **Actualizar productos en el carrito**
+   - **URL**: `PUT /api/carts/:cid`
+   - **Body (JSON)**:
+     ```json
+     {
+       "products": [
+         { "product": "product_id_1", "quantity": 2 },
+         { "product": "product_id_2", "quantity": 5 }
+       ]
+     }
+     ```
+   - **Response**: Debe devolver el carrito actualizado.
+
+6. **Actualizar cantidad de un producto en el carrito**
+   - **URL**: `PUT /api/carts/:cid/products/:pid`
+   - **Body (JSON)**:
+     ```json
+     {
+       "quantity": 3
+     }
+     ```
+   - **Response**: Debe devolver el carrito con la cantidad actualizada del producto.
+
+7. **Eliminar todos los productos del carrito**
+   - **URL**: `DELETE /api/carts/:cid`
+   - **Response**: Debe devolver el carrito vacío.

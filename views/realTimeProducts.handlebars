@@ -18,7 +18,7 @@
         <input type="text" id="name" placeholder="Nombre" required>
         <input type="text" id="description" placeholder="Descripción" required>
         <input type="text" id="category" placeholder="Categoría" required>
-        <input type="number" id="price" placeholder="Precio" required min="0.01" step="0.01">
+        <input type="number" id="price" placeholder="Precio" required min="0">
         <input type="number" id="stock" placeholder="Stock" required min="1">
         <button type="submit" class="styled-button">Agregar producto</button>
     </form>
@@ -67,29 +67,66 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        let socket;
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            socket = io();
+
+            socket.on('connect', () => {
+                console.log('Conectado al servidor WebSocket');
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Desconectado del servidor WebSocket');
+            });
+
+            socket.on('update-products', (products) => {
+                const productsList = document.getElementById('products-list');
+                productsList.innerHTML = '';
+                products.forEach(product => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'product-item';
+                    listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
+                        <div class="product-actions">
+                            <a href="#" class="action-link" onclick="deleteProduct('${product._id}'); return false;">Eliminar</a>
+                            <a href="/products/${product._id}/edit" class="action-link">Modificar</a>
+                        </div>`;
+                    productsList.appendChild(listItem);
+                });
+            });
+
+            socket.on('new-product', (product) => {
+                const productsList = document.getElementById('products-list');
+                const listItem = document.createElement('li');
+                listItem.className = 'product-item';
+                listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
+                    <div class="product-actions">
+                        <a href="#" class="action-link" onclick="deleteProduct('${product._id}'); return false;">Eliminar</a>
+                        <a href="/products/${product._id}/edit" class="action-link">Modificar</a>
+                    </div>`;
+                productsList.appendChild(listItem);
+            });
+
+            socket.on('delete-product', (productId) => {
+                const productsList = document.getElementById('products-list');
+                const productItems = productsList.getElementsByClassName('product-item');
+                for (let i = 0; i < productItems.length; i++) {
+                    if (productItems[i].querySelector('a').onclick.toString().includes(productId)) {
+                        productsList.removeChild(productItems[i]);
+                        break;
+                    }
+                }
+            });
+        });
 
         function addProduct(event) {
             event.preventDefault();
-            const price = parseFloat(document.getElementById('price').value);
-            const stock = parseInt(document.getElementById('stock').value);
-
-            if (price <= 0) {
-                alert('El precio debe ser un número positivo mayor que cero.');
-                return;
-            }
-
-            if (stock <= 0) {
-                alert('El stock debe ser un número positivo mayor que cero.');
-                return;
-            }
-
             const product = {
                 name: document.getElementById('name').value,
                 description: document.getElementById('description').value,
                 category: document.getElementById('category').value,
-                price: price,
-                stock: stock,
+                price: parseFloat(document.getElementById('price').value),
+                stock: parseInt(document.getElementById('stock').value),
             };
 
             fetch('/api/products', {
@@ -115,43 +152,5 @@
                   socket.emit('delete-product', productId);
               });
         }
-
-        socket.on('update-products', (products) => {
-            const productsList = document.getElementById('products-list');
-            productsList.innerHTML = '';
-            products.forEach(product => {
-                const listItem = document.createElement('li');
-                listItem.className = 'product-item';
-                listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
-                    <div class="product-actions">
-                        <a href="#" class="action-link" onclick="deleteProduct('${product._id}'); return false;">Eliminar</a>
-                        <a href="/products/${product._id}/edit" class="action-link">Modificar</a>
-                    </div>`;
-                productsList.appendChild(listItem);
-            });
-        });
-
-        socket.on('new-product', (product) => {
-            const productsList = document.getElementById('products-list');
-            const listItem = document.createElement('li');
-            listItem.className = 'product-item';
-            listItem.innerHTML = `<span>${product.name} - $${product.price}</span>
-                <div class="product-actions">
-                    <a href="#" class="action-link" onclick="deleteProduct('${product._id}'); return false;">Eliminar</a>
-                    <a href="/products/${product._id}/edit" class="action-link">Modificar</a>
-                </div>`;
-            productsList.appendChild(listItem);
-        });
-
-        socket.on('delete-product', (productId) => {
-            const productsList = document.getElementById('products-list');
-            const productItems = productsList.getElementsByClassName('product-item');
-            for (let i = 0; i < productItems.length; i++) {
-                if (productItems[i].querySelector('a').onclick.toString().includes(productId)) {
-                    productsList.removeChild(productItems[i]);
-                    break;
-                }
-            }
-        });
     </script>
 {{/layout}}

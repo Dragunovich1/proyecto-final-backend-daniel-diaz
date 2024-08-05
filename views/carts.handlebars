@@ -28,6 +28,66 @@
             display: flex;
             gap: 0.5rem;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .action-button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 3px;
+            border: none;
+            text-align: center;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .action-button:hover {
+            background-color: #555;
+        }
+        .action-button:focus {
+            outline: none;
+        }
+        .message {
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 1rem;
+            border: 1px solid #d6e9c6;
+            border-radius: 3px;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -54,9 +114,64 @@
                 </li>
                 {{/each}}
             </ul>
+            <form action="/api/carts/{{cart._id}}?_method=delete" method="POST" style="margin-top: 1rem;" id="empty-cart-form">
+                <a href="#" onclick="submitEmptyCartForm()" class="action-link">Vaciar Carrito</a>
+            </form>
         {{else}}
             <p>El carrito está vacío.</p>
         {{/if}}
     </div>
+
+    <!-- Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="message">
+                El carrito se ha vaciado correctamente.
+            </div>
+            <div class="product-details">
+                <pre id="responseContent"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function submitEmptyCartForm() {
+            event.preventDefault();
+            const form = document.getElementById('empty-cart-form');
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showModal(data);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function showModal(data) {
+            const modal = document.getElementById("confirmationModal");
+            const responseContent = document.getElementById("responseContent");
+            responseContent.textContent = JSON.stringify(data, null, 2);
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("confirmationModal");
+            modal.style.display = "none";
+            location.reload(); // Recargar la página al cerrar el modal
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById("confirmationModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+                location.reload(); // Recargar la página al hacer clic fuera del modal
+            }
+        }
+    </script>
 </body>
 </html>
