@@ -30,9 +30,7 @@ cd proyecto-final-backend-daniel-diaz
 
 2. Instalar las dependencias:
 
-\`\`\`sh
 npm install
-\`\`\`
 
 3. Configurar la base de datos:
 
@@ -44,17 +42,13 @@ Asegúrate de tener una instancia de MongoDB corriendo. Puedes usar la configura
 
 Para ejecutar el servidor en modo desarrollo (con reinicio automático):
 
-\`\`\`sh
 npm run dev
-\`\`\`
 
 ### Modo Producción
 
 Para ejecutar el servidor en modo producción:
 
-\`\`\`sh
 npm start
-\`\`\`
 
 El servidor estará corriendo en \`http://localhost:8080\`.
 
