@@ -23,10 +23,8 @@ Este proyecto es un servidor básico de e-commerce desarrollado con Node.js y Ex
 
 1. Clonar el repositorio:
 
-\`\`\`sh
 git clone https://github.com/Dragunovich1/proyecto-final-backend-daniel-diaz
 cd proyecto-final-backend-daniel-diaz
-\`\`\`
 
 2. Instalar las dependencias:
 
